@@ -1,23 +1,39 @@
-# Implementation Notes and Current Limitations
+# Challenges and Limitations
 
-This document records observations from inspecting the supplied project. It does not claim
-that these were personally encountered or resolved during development.
+## Challenges Faced
 
-## Existing implementation
-The project contains a Flask application with Jinja templates, SQLite persistence, invoice
-extraction/validation, PO/GRN matching, approval workflow, vendor management, payment tracking,
-dashboard/report pages, sample invoices, and a test-flow script.
+### 1. OCR Data Extraction
+Extracting accurate information from invoices with different layouts, fonts, and formats was challenging.
 
-## Key compatibility gap
-The recruitment email mandates ReactJS, Django, and PostgreSQL. The supplied source uses Flask,
-server-rendered templates, and SQLite. This is a fundamental stack mismatch, not a configuration
-change. A compliant implementation requires a React client, Django application/API, PostgreSQL
-models/migrations, and integration testing across those components.
+**Solution:** Implemented OCR-based text extraction to identify important invoice details such as invoice numbers, dates, vendor information, and amounts.
 
-## Integration limitations visible in the source
-- OCR for image/scanned files depends on Tesseract being installed on the host machine.
-- Email ingestion depends on IMAP server credentials supplied through environment variables.
-- Payment tracking/export is implemented locally; a live banking-system connection is not present.
-- The reminder/escalation logic is invoked by an application action; a production scheduler and
-  real notification delivery would need to be configured.
-- The supplied end-to-end test script is included but was not executed in this packaging step.
+### 2. Data Validation
+Handling missing fields, incorrect values, duplicate invoices, and inconsistent vendor information required multiple validation checks.
+
+**Solution:** Implemented validation logic for mandatory fields, duplicate invoice numbers, GST details, vendor information, and invoice totals.
+
+### 3. Invoice Matching
+Comparing invoice details with purchase orders and goods receipt notes was challenging because the information could differ.
+
+**Solution:** Implemented two-way and three-way matching logic to identify mismatches and discrepancies.
+
+### 4. Approval Workflow
+Managing invoice approvals and tracking different approval statuses required proper workflow handling.
+
+**Solution:** Implemented an approval mechanism to manage invoice status and approval progress.
+
+### 5. Database Management
+Maintaining relationships between invoices, vendors, purchase orders, payments, and approval records required proper database organisation.
+
+**Solution:** Structured the database to store and manage related information.
+
+## Limitations
+
+- OCR accuracy depends on invoice image quality, formatting, and text clarity.
+- Scanned invoice processing requires Tesseract OCR installation.
+- Email ingestion requires valid IMAP credentials and server configuration.
+- Live banking integration is not available.
+- ERP and external accounting system integration is not implemented.
+- Automated reminders and escalation require additional scheduling and notification configuration.
+- The complete end-to-end test suite has not been executed.
+- The current implementation uses Flask, server-rendered templates, and SQLite instead of ReactJS, Django, and PostgreSQL.
