@@ -21,10 +21,3 @@ models/migrations, and integration testing across those components.
 - The reminder/escalation logic is invoked by an application action; a production scheduler and
   real notification delivery would need to be configured.
 - The supplied end-to-end test script is included but was not executed in this packaging step.
-
-## Before submission
-1. Rebuild or migrate the application to ReactJS + Django + PostgreSQL.
-2. Run the full test flow in a configured environment and retain actual results.
-3. Verify OCR using both text PDFs and scanned/image invoices.
-4. Configure and test any external email, notification, ERP, or banking integrations that are claimed.
-5. Record a demo of the actual running application and explain only features that are implemented.
