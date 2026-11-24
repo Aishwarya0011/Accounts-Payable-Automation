@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Approval rules{% endblock %}
+{% block body %}
+<h1>Approval matrix</h1>
+<p class="muted">An invoice total falling inside a row's range needs approval from that role. Rows with the same level approve in parallel; the next level starts after the current level is complete.</p>
+<table>
+  <tr><th>From amount</th><th>To amount</th><th>Role</th><th>Level</th><th></th></tr>
+  {% for r in rows %}<tr><td class="num">{{ r.min_amount|inr }}</td><td class="num">{{ r.max_amount|inr }}</td><td>{{ r.role }}</td><td>{{ r.level }}</td>
+    <td><form method="post" class="inline"><button name="delete" value="{{ r.id }}" class="danger">Delete</button></form></td></tr>{% endfor %}
+</table>
+<h2>Add a rule</h2>
+<form method="post" class="grid">
+  <label>From amount <input name="min_amount" required></label>
+  <label>To amount <input name="max_amount" required></label>
+  <label>Role <select name="role"><option>Manager</option><option>Finance</option><option>Admin</option></select></label>
+  <label>Level <input name="level" type="number" min="1" value="1" required></label>
+  <div class="full"><button class="primary">Add rule</button></div>
+</form>
+{% endblock %}

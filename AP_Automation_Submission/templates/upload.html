@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Upload invoices{% endblock %}
+{% block body %}
+<h1>Upload invoices</h1>
+<form method="post" enctype="multipart/form-data" id="upload-form">
+  <div id="drop" class="drop">
+    <p><strong>Drag and drop invoices here</strong></p>
+    <p class="muted">PDF, JPG, PNG or TIFF. You can select many files at once.</p>
+    <input type="file" name="files" id="files" multiple accept=".pdf,.jpg,.jpeg,.png,.tif,.tiff">
+    <ul id="file-list"></ul>
+  </div>
+  <button class="primary">Upload and process</button>
+</form>
+<p class="muted">Each file is read with OCR, checked, matched against its purchase order and routed for approval.
+  Invoices from email can be pulled in with <code>python email_ingest.py</code>.</p>
+<script src="{{ url_for('static', filename='upload.js') }}"></script>
+{% endblock %}

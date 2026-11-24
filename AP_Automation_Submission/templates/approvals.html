@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Approvals{% endblock %}
+{% block body %}
+<h1>Waiting for your approval ({{ user.role }})</h1>
+<div class="scroll">
+<table>
+  <tr><th>Invoice</th><th>Vendor</th><th class="num">Total</th><th>Due by</th><th>Decision</th></tr>
+  {% for a in rows %}
+  <tr>
+    <td><a href="{{ url_for('invoice_detail', inv_id=a.invoice_id) }}">{{ a.invoice_number }}</a></td>
+    <td>{{ a.vendor_name }}</td><td class="num">{{ a.total|inr }}</td>
+    <td>{{ a.due_at }} {% if a.escalated %}<span class="badge exception">Escalated</span>{% endif %}</td>
+    <td>{% include '_approve_form.html' %}</td>
+  </tr>
+  {% else %}<tr><td colspan="5" class="muted">Nothing is waiting for you.</td></tr>{% endfor %}
+</table>
+</div>
+{% if user.role == 'Admin' %}
+<form method="post" action="{{ url_for('reminders') }}" class="spaced">
+  <button>Run reminder and escalation job</button>
+  <span class="muted">Sends reminders for pending approvals and escalates overdue ones to Admin.</span>
+</form>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Invoices{% endblock %}
+{% block body %}
+<h1>Invoices {% if status %}<small>({{ status }}) <a href="{{ url_for('invoices') }}">show all</a></small>{% endif %}</h1>
+<div class="scroll">
+<table>
+  <tr><th>#</th><th>Invoice no.</th><th>Vendor</th><th>Date</th><th>PO</th><th class="num">Total</th><th>Match</th><th>OCR</th><th>Status</th></tr>
+  {% for r in rows %}
+  <tr>
+    <td><a href="{{ url_for('invoice_detail', inv_id=r.id) }}">{{ r.id }}</a></td>
+    <td>{{ r.invoice_number or '-' }}</td><td>{{ r.vendor_name }}</td><td>{{ r.invoice_date }}</td><td>{{ r.po_number }}</td>
+    <td class="num">{{ r.total|inr }}</td><td>{{ r.match_type }}</td><td>{{ r.ocr_confidence|round|int }}%</td>
+    <td>{% set status = r.status %}{% include '_badge.html' %}</td>
+  </tr>
+  {% else %}<tr><td colspan="9" class="muted">No invoices yet.</td></tr>{% endfor %}
+</table>
+</div>
+{% endblock %}

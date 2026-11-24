@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Payments{% endblock %}
+{% block body %}
+<h1>Payments {% if user.role in ('Finance','Admin') %}<a class="button" href="{{ url_for('payments_export') }}">Download bank file (CSV)</a>{% endif %}</h1>
+<div class="scroll">
+<table>
+  <tr><th>#</th><th>Invoice</th><th>Vendor</th><th class="num">Amount</th><th>Status</th><th>Requested</th><th>Paid</th><th>Reference</th><th></th></tr>
+  {% for p in rows %}
+  <tr><td>{{ p.id }}</td><td><a href="{{ url_for('invoice_detail', inv_id=p.invoice_id) }}">{{ p.invoice_number }}</a></td>
+    <td>{{ p.vendor_name }}</td><td class="num">{{ p.amount|inr }}</td><td>{{ p.status }}</td>
+    <td>{{ p.requested_at }}</td><td>{{ p.paid_at or '' }}</td><td>{{ p.reference or '' }}</td>
+    <td class="actions">
+      {% if p.status == 'Requested' and user.role in ('Finance','Admin') %}
+      <form method="post" action="{{ url_for('mark_paid', pay_id=p.id) }}" class="inline">
+        <input name="reference" placeholder="Bank reference (optional)"><button class="primary">Mark paid</button></form>
+      {% endif %}
+      <a href="{{ url_for('payment_advice', pay_id=p.id) }}">Advice</a></td></tr>
+  {% else %}<tr><td colspan="9" class="muted">No payments yet. Approved invoices can be sent for payment from the invoice page.</td></tr>{% endfor %}
+</table>
+</div>
+{% endblock %}

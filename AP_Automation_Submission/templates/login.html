@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Log in{% endblock %}
+{% block body %}
+<div class="login">
+  <h1>AP Automation</h1>
+  <p class="muted">Log in to process invoices, approvals and payments.</p>
+  <form method="post">
+    <label>Username <input name="username" autofocus required></label>
+    <label>Password <input name="password" type="password" required></label>
+    <button class="primary">Log in</button>
+  </form>
+  <table class="small">
+    <tr><th>Role</th><th>Username</th><th>Password</th></tr>
+    <tr><td>AP Clerk</td><td>clerk</td><td>clerk123</td></tr>
+    <tr><td>Manager</td><td>manager</td><td>manager123</td></tr>
+    <tr><td>Finance</td><td>finance</td><td>finance123</td></tr>
+    <tr><td>Admin</td><td>admin</td><td>admin123</td></tr>
+  </table>
+</div>
+{% endblock %}

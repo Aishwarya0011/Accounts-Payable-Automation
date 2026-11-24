@@ -1,0 +1,5 @@
+<form method="post" action="{{ url_for('approval_action', ap_id=a.id) }}" class="inline">
+  <input name="comment" placeholder="Comment (required to reject)">
+  <button name="decision" value="approve" class="primary">Approve</button>
+  <button name="decision" value="reject" class="danger">Reject</button>
+</form>

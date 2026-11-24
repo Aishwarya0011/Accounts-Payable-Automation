@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block body %}
+<h1>Dashboard</h1>
+
+<div class="tiles">
+  <div class="tile"><span class="big">{{ pending|length }}</span> waiting for your approval
+    <a href="{{ url_for('approvals') }}">Open</a></div>
+  <div class="tile"><span class="big">{{ '%.1f'|format(stats.ocr or 0) }}%</span> OCR accuracy (fields found)</div>
+  <div class="tile"><span class="big">{{ '%.2f'|format(stats.tat or 0) }} h</span> average time from upload to approval</div>
+</div>
+
+<div class="cols">
+  <section>
+    <h2>Invoices by status</h2>
+    <table>
+      <tr><th>Status</th><th class="num">Invoices</th><th class="num">Amount</th></tr>
+      {% for r in by_status %}
+      <tr><td><a href="{{ url_for('invoices', status=r.status) }}">{% set status = r.status %}{% include '_badge.html' %}</a></td>
+          <td class="num">{{ r.n }}</td><td class="num">{{ r.amount|inr }}</td></tr>
+      {% else %}<tr><td colspan="3" class="muted">No invoices yet. Upload one to get started.</td></tr>{% endfor %}
+    </table>
+  </section>
+
+  <section>
+    <h2>Invoice aging (unpaid)</h2>
+    {% for name, v in buckets.items() %}
+    <div class="bar-row">
+      <span class="bar-label">{{ name }}</span>
+      <span class="bar" style="width: {{ (v[1] / max_amount * 100)|round|int }}%"></span>
+      <span class="bar-value">{{ v[0] }} inv &middot; {{ v[1]|inr }}</span>
+    </div>
+    {% endfor %}
+  </section>
+</div>
+
+<div class="cols">
+  <section>
+    <h2>Vendor-wise analytics</h2>
+    <table>
+      <tr><th>Vendor</th><th class="num">Invoices</th><th class="num">Amount</th></tr>
+      {% for r in vendors %}<tr><td>{{ r.vendor_name }}</td><td class="num">{{ r.n }}</td><td class="num">{{ r.amount|inr }}</td></tr>
+      {% else %}<tr><td colspan="3" class="muted">No data yet.</td></tr>{% endfor %}
+    </table>
+  </section>
+  <section>
+    <h2>Payment tracking</h2>
+    <table>
+      <tr><th>Status</th><th class="num">Payments</th><th class="num">Amount</th></tr>
+      {% for r in pay %}<tr><td>{{ r.status }}</td><td class="num">{{ r.n }}</td><td class="num">{{ r.amount|inr }}</td></tr>
+      {% else %}<tr><td colspan="3" class="muted">No payments yet.</td></tr>{% endfor %}
+    </table>
+  </section>
+</div>
+{% endblock %}

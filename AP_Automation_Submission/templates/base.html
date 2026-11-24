@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}AP Automation{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% if user %}
+<header class="top">
+  <a class="brand" href="{{ url_for('dashboard') }}">AP Automation</a>
+  <nav>
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    {% if user.role in ('Clerk','Admin') %}<a href="{{ url_for('upload') }}">Upload</a>{% endif %}
+    <a href="{{ url_for('invoices') }}">Invoices</a>
+    <a href="{{ url_for('approvals') }}">Approvals</a>
+    <a href="{{ url_for('vendors') }}">Vendors</a>
+    <a href="{{ url_for('payments') }}">Payments</a>
+    <a href="{{ url_for('reports_index') }}">Reports</a>
+    {% if user.role == 'Admin' %}<a href="{{ url_for('rules') }}">Approval rules</a>{% endif %}
+  </nav>
+  <div class="who">{{ user.name }} <a href="{{ url_for('logout') }}">Log out</a></div>
+</header>
+{% endif %}
+<main>
+  {% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="flash {{ category }}">{{ message }}</div>
+  {% endfor %}
+  {% block body %}{% endblock %}
+</main>
+</body>
+</html>
