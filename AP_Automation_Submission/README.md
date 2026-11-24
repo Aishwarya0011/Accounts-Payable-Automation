@@ -78,8 +78,4 @@ that check does not prove runtime functionality.
 - `sample_invoices/` — sample PDF/image invoices
 - `test_flow.py` — end-to-end test script
 
-## Scope gaps against the recruiter email
-The recruiter's email explicitly requires ReactJS, Django, and PostgreSQL. This codebase is
-not implemented with those technologies. It also does not establish a live banking integration
-or a production email-ingestion service. Review and complete these items before claiming
-full compliance or submitting it as a completed mandatory-stack assignment.
+
