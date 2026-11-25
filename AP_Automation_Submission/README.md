@@ -1,141 +1,88 @@
-# Accounts Payable Automation System
+# Accounts Payable Automation
 
-## Project Overview
+A fresh full-stack implementation using **React**, **Django REST Framework**, and **PostgreSQL**.
+Python is the language used by Django; JavaScript is used by React. No Flask or SQLite is used.
 
-The Accounts Payable Automation System is designed to simplify invoice processing and management through OCR-based data extraction, invoice validation, purchase order matching, approval workflows, and payment tracking.
+## Included modules
+- Invoice upload (PDF, PNG, JPG, JPEG, TIFF) with multi-file selection
+- OCR extraction using Tesseract when installed; PDF text extraction fallback
+- Editable extracted invoice fields and line-item storage
+- Mandatory field, duplicate invoice, GST-format, amount and vendor validation
+- PO vs invoice (2-way) and PO vs GRN vs invoice (3-way) matching
+- Vendor master and bank-detail fields
+- Role-based approval actions and configurable approval thresholds
+- Payment request creation and payment status tracking (simulation only)
+- Dashboard summaries and CSV reports/audit events
 
-The application aims to reduce manual work, improve accuracy, and make invoice processing more efficient.
+## Important scope boundaries
+This is a runnable project foundation, not a production ERP/AP platform.
+- Email ingestion is not connected to a real mailbox.
+- Real bank transfer/banking API integration is not included; payment status is simulated.
+- Approval reminders, automatic escalation, parallel approvals and mobile push approvals are not implemented.
+- OCR accuracy is not guaranteed; users should review and correct extracted fields.
+- GST validation checks format/basic consistency only; it does not query GSTN.
+- The dashboard shows operational counts from the local database; OCR accuracy and processing turnaround are not independently benchmarked.
+- TIFF support depends on Pillow/Tesseract support in the host environment.
+- The automated test suite is included but must be run in the target environment before claiming verified results.
 
-## Features
+## Requirements
+- Docker Desktop (recommended), or PostgreSQL 15+
+- Node.js 20+
+- Python 3.11+
+- Tesseract OCR installed and available on PATH (optional but recommended)
 
-### 1. Invoice Capture
-- Upload invoices in PDF and image formats.
-- Support for multiple invoice uploads.
+## Run with Docker (PostgreSQL + Django API)
+From this folder:
+```bash
+docker compose up --build
+```
+API: http://localhost:8000/api/
+Django admin: http://localhost:8000/admin/
 
-### 2. OCR and Data Extraction
-- Extract text from uploaded invoices using OCR.
-- Identify invoice numbers, dates, vendor details, and amounts.
-- Extract relevant invoice information.
+Create an admin user in another terminal:
+```bash
+docker compose exec backend python manage.py createsuperuser
+```
 
-### 3. Invoice Validation
-- Validate mandatory invoice fields.
-- Identify duplicate invoices.
-- Validate vendor and GST details.
-- Check invoice amounts and totals.
+## Run React frontend
+In a second terminal:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Open http://localhost:5173
 
-### 4. Purchase Order Matching
-- Two-way matching between purchase orders and invoices.
-- Three-way matching between purchase orders, goods receipt notes, and invoices.
-- Identify mismatches and discrepancies.
+The frontend calls the Django API at http://localhost:8000/api/.
 
-### 5. Approval Workflow
-- Manage invoice approval statuses.
-- Track approval progress.
-- Support invoice review and approval.
-
-### 6. Vendor Management
-- Maintain vendor information.
-- Manage vendor details and records.
-
-### 7. Payment Tracking
-- Track invoice payment statuses.
-- Maintain payment-related information.
-
-### 8. Dashboard and Reports
-- View invoice summaries.
-- Monitor pending approvals.
-- Track invoice processing status.
-- View relevant invoice information.
-
-## Technologies Used
-
-- Python
-- Flask
-- HTML
-- CSS
-- JavaScript
-- SQLite
-- Tesseract OCR
-
-## Project Structure
-
+## Local backend without Docker
+Create a PostgreSQL database and set:
 ```text
-Accounts-Payable-Automation/
-│
-├── app.py
-├── templates/
-├── static/
-├── uploads/
-├── sample_invoices/
-├── requirements.txt
-├── database/
-├── README.md
-└── CHALLENGES_AND_LIMITATIONS.md
+DATABASE_URL=postgres://ap_user:ap_password@localhost:5432/ap_automation
+DJANGO_SECRET_KEY=change-this-for-local-use
 ```
-
-*The actual project structure may vary depending on the files present in the repository.*
-
-## Installation and Setup
-
-### Prerequisites
-
-- Python 3.10 or later
-- pip
-- Tesseract OCR
-
-### Step 1: Clone the Repository
-
+Then:
 ```bash
-git clone https://github.com/Aishwarya0011/Accounts-Payable-Automation.git
-```
-
-### Step 2: Navigate to the Project Directory
-
-```bash
-cd Accounts-Payable-Automation
-```
-
-### Step 3: Create a Virtual Environment
-
-```bash
-python -m venv venv
-```
-
-Activate it:
-
-**Windows:**
-```bash
-venv\Scripts\activate
-```
-
-### Step 4: Install Dependencies
-
-```bash
+cd backend
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
 ```
 
-### Step 5: Run the Application
+## Demo data
+Create a superuser, log into `/admin/`, and add vendors, purchase orders and GRNs.
+A default demo account is deliberately not hard-coded. Create users and assign groups/roles in Django admin.
 
+## Tests
 ```bash
-python app.py
+cd backend
+python manage.py test
 ```
+Run tests before submission and record the actual output in your demo/report.
 
-Open your browser and visit:
-
-```text
-http://127.0.0.1:5000/
-```
-
-## Sample Data
-
-The `sample_invoices` folder contains sample invoice files for testing invoice upload and processing functionality.
-
-## Documentation
-
-Refer to `CHALLENGES_AND_LIMITATIONS.md` for information about development challenges and current limitations.
-
-## Future Enhancements
-
-- Integration with ERP and accounting systems.
-- Automated email notifications.
-- Advanced OCR and AI-based extraction.
+## Security notes
+Set a strong secret key, configure allowed hosts/CORS, use HTTPS, secure uploaded files,
+and review authorization before production deployment. Do not use sample credentials in production.
